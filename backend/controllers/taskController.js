@@ -1,24 +1,37 @@
 const Task = require("../models/task");
-const tasks = (req, res) => {
-  Task.find(function (err, tasks) {
-    if (err) {
-      console.log(err);
-    } else {
-      res.json(tasks);
-    }
-  });
+
+// get all tasks
+const tasks = async (req, res) => {
+  const tasks = await Task.find({}).sort({ createdAt: -1 });
+
+  res.status(200).json(tasks);
 };
 
-const task_add = (req, res) => {
-  let task = new Task(req.body);
-  task.save((err, task) => {
-    if (err) {
-      console.log(err);
-      res.status(400).send("adding task failed");
-    } else {
-      res.status(200).json({ task: "task added" });
-    }
-  });
+const task_add = async (req, res) => {
+  const { body, taskCompleted } = req.body;
+
+  let emptyFields = [];
+
+  if (!body) {
+    emptyFields.push("body");
+  }
+  if ( typeof taskCompleted !== "boolean") {
+    emptyFields.push(" taskCompleted");
+  }
+
+  if (emptyFields.length > 0) {
+    return res
+      .status(400)
+      .json({ error: "Please fill in all fields", emptyFields });
+  }
+
+  // add to the database
+  try {
+    const task = await Task.create({ body, taskCompleted });
+    res.status(200).json(task);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 };
 
 const task_edit = (req, res) => {
