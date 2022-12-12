@@ -41,7 +41,7 @@ export default function TaskList() {
         };
 
         axios
-          .post("http://localhost:4000/api/tasks/add", task)
+          .post("http://localhost:4000/api/tasks", task)
           .then((res) => console.log(res.data));
 
         setText("");
@@ -53,7 +53,7 @@ export default function TaskList() {
         };
 
         axios
-          .post(`http://localhost:4000/api/tasks/edit/${isUpdating}`, task)
+          .put(`http://localhost:4000/api/tasks/${isUpdating}`, task)
           .then((res) => console.log(res.data));
         setText("");
         setUpdating("");
@@ -73,13 +73,13 @@ export default function TaskList() {
       taskCompleted: true,
     };
     axios
-      .post(`http://localhost:4000/api/tasks/edit/${id}`, task)
+      .put(`http://localhost:4000/api/tasks/${id}`, task)
       .then((res) => console.log(res.data));
   };
 
   function deleteTask(id) {
     axios
-      .post(`http://localhost:4000/api/tasks/delete/${id}`)
+      .delete(`http://localhost:4000/api/tasks/${id}`)
       .then((res) => console.log(res.data));
     if (tasks.length) {
       setUpdating("");
