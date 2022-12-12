@@ -15,7 +15,7 @@ const task_add = async (req, res) => {
   if (!body) {
     emptyFields.push("body");
   }
-  if ( typeof taskCompleted !== "boolean") {
+  if (typeof taskCompleted !== "boolean") {
     emptyFields.push(" taskCompleted");
   }
 
@@ -34,25 +34,26 @@ const task_add = async (req, res) => {
   }
 };
 
-const task_edit = (req, res) => {
-  Task.findById(req.params.id, function (err, task) {
-    if (!task) {
-      res.status(404).send("task not found");
-    } else {
-      const { body, taskCompleted } = req.body;
+// update a task
+const task_edit = async (req, res) => {
+  const { id } = req.params;
 
-      task.body = body;
-      task.taskCompleted = taskCompleted;
-      task.save((err, task) => {
-        if (err) {
-          console.log(err);
-          res.status(400).send("updating task failed");
-        } else {
-          res.status(200).json({ task: "task updated" });
-        }
-      });
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: "No such task" });
+  }
+
+  const task = await Task.findOneAndUpdate(
+    { _id: id },
+    {
+      ...req.body,
     }
-  });
+  );
+
+  if (!task) {
+    return res.status(400).json({ error: "No such task" });
+  }
+
+  res.status(200).json(task);
 };
 
 // delete a task
