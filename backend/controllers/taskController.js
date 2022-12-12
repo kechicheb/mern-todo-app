@@ -6,7 +6,7 @@ const tasks = async (req, res) => {
 
   res.status(200).json(tasks);
 };
-
+//  Create New Task
 const task_add = async (req, res) => {
   const { body, taskCompleted } = req.body;
 
@@ -55,16 +55,21 @@ const task_edit = (req, res) => {
   });
 };
 
-const task_delete = (req, res) => {
-  const id = req.params.id;
-  Task.deleteOne({ _id: id }, (err) => {
-    if (err) {
-      console.log(err);
-      res.status(400).send("deleting task failed");
-    } else {
-      res.status(200).json({ task: "task deleted" });
-    }
-  });
+// delete a task
+const task_delete = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ error: "No such task" });
+  }
+
+  const task = await Task.findOneAndDelete({ _id: id });
+
+  if (!task) {
+    return res.status(400).json({ error: "No such task" });
+  }
+
+  res.status(200).json(task);
 };
 
 module.exports = {
