@@ -31,9 +31,8 @@ app.use((req, res, next) => {
   res.locals.path = req.path;
   next();
 });
-
-// blog routes
-app.use("/tasks", taskRoutes);
+// tasks routes
+app.use("/api/tasks", taskRoutes);
 
 // 404 page
 app.use((req, res) => {
