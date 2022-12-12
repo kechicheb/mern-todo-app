@@ -1,13 +1,15 @@
 const Task = require("../models/task");
+const mongoose = require("mongoose");
 
 // get all tasks
-const tasks = async (req, res) => {
+const getTasks = async (req, res) => {
   const tasks = await Task.find({}).sort({ createdAt: -1 });
 
   res.status(200).json(tasks);
 };
-//  Create New Task
-const task_add = async (req, res) => {
+
+// Create a new task
+const createTask = async (req, res) => {
   const { body, taskCompleted } = req.body;
 
   let emptyFields = [];
@@ -35,7 +37,7 @@ const task_add = async (req, res) => {
 };
 
 // update a task
-const task_edit = async (req, res) => {
+const updateTask = async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -56,8 +58,9 @@ const task_edit = async (req, res) => {
   res.status(200).json(task);
 };
 
+
 // delete a task
-const task_delete = async (req, res) => {
+const deleteTask = async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -74,8 +77,8 @@ const task_delete = async (req, res) => {
 };
 
 module.exports = {
-  tasks,
-  task_add,
-  task_edit,
-  task_delete,
+  getTasks,
+  createTask,
+  updateTask,
+  deleteTask,
 };
