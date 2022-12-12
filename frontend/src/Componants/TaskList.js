@@ -7,6 +7,7 @@ import axios from "axios";
 
 export default function TaskList() {
   const [Text, setText] = useState("");
+  const [Completed, setCompleted] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [isUpdating, setUpdating] = useState("");
   let [error, setError] = useState("");
@@ -48,7 +49,7 @@ export default function TaskList() {
         setError("");
         const task = {
           body: Text,
-          taskCompleted: false,
+          taskCompleted: Completed,
         };
 
         axios
@@ -56,13 +57,15 @@ export default function TaskList() {
           .then((res) => console.log(res.data));
         setText("");
         setUpdating("");
+        setCompleted(false);
       }
     }
     document.querySelector(".input").focus();
   };
-  const updateTask = (id, text) => {
+  const updateTask = (id, text, taskCompleted) => {
     setUpdating(id);
     setText(text);
+    setCompleted(taskCompleted);
   };
   const doneTask = (id, body) => {
     const task = {
@@ -95,7 +98,7 @@ export default function TaskList() {
             doneTask(task._id, task.body);
           }}
           deleteTask={() => deleteTask(task._id)}
-          updateTask={() => updateTask(task._id, task.body)}
+          updateTask={() => updateTask(task._id, task.body, task.taskCompleted)}
         />
       </div>
     );
