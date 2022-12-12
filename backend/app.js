@@ -20,6 +20,12 @@ app.set("view engine", "ejs");
 // middleware & static files
 app.use(bodyParser.json());
 app.use(cors());
+// remove comment when project in production
+// app.use(
+//   cors({
+//     origin: ["http://localhost:3000", "your domain name"],
+//   })
+// );
 
 app.use((req, res, next) => {
   res.locals.path = req.path;
